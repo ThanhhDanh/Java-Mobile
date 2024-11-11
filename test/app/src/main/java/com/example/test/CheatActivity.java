@@ -13,6 +13,8 @@ import android.widget.Toast;
 public class CheatActivity extends AppCompatActivity {
 
     private static final String EXTRA_ANSWER = "vt-le.quiz.answer";
+    private static final String EXTRA_ANSWER_RESULT = "vt-le.quiz.answer_result";
+
     private boolean mAnswer;
     private TextView mTextViewAnswer;
     private Button btnShowAnswer;
@@ -26,13 +28,25 @@ public class CheatActivity extends AppCompatActivity {
         mTextViewAnswer = findViewById(R.id.m_text_view_answer);
         btnShowAnswer = findViewById(R.id.show_answer);
 
-        btnShowAnswer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.out.print("Show answer: ", view.getId());
-                Toast.makeText(CheatActivity.this, view.getId(), Toast.LENGTH_SHORT).show();
+        btnShowAnswer.setOnClickListener(view -> {
+            if(mAnswer) {
+                mTextViewAnswer.setText("True");
+            } else {
+                mTextViewAnswer.setText("False");
             }
+            setAnswerResult(true);
         });
+
+    }
+
+    private void setAnswerResult(boolean isAnwserShow ){
+        Intent data = new Intent();
+        data.putExtra(EXTRA_ANSWER_RESULT, isAnwserShow);
+        setResult(RESULT_OK, data);
+    }
+
+    public static boolean getAnswerShow(Intent intent){
+        return intent.getBooleanExtra(EXTRA_ANSWER_RESULT, false);
     }
 
     public static Intent newIntent(Context pakageContext, boolean answer){

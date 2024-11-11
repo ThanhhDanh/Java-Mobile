@@ -1,5 +1,9 @@
 package com.example.test;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int currentQuestionIndex = 0;
+
+    private boolean mIsCheater;
 
     private static final String KEY_INDEX = "index";
 
@@ -82,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 //                Intent i = new Intent(MainActivity.this, CheatActivity.class);
                 boolean answer = mQuestionBank[currentQuestionIndex].getAnswer();
                 Intent i = CheatActivity.newIntent(MainActivity.this, answer);
-                startActivity(i);
+                startActivityResult.launch(i);
             }
         });
 
@@ -92,17 +98,37 @@ public class MainActivity extends AppCompatActivity {
         updateQuestion();
     }
 
+    ActivityResultLauncher<Intent> startActivityResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result != null && result.getResultCode() == RESULT_OK) {
+                        if (result.getData() != null)
+                            mIsCheater = CheatActivity.getAnswerShow(result.getData());
+                    }
+                }
+            }
+    );
+
     private void updateQuestion() {
         Question.setText(mQuestionBank[currentQuestionIndex].getQuestion());
     }
 
     private void checkAnswer(boolean userAnswer) {
         boolean correctAnswer = mQuestionBank[currentQuestionIndex].getAnswer();
-        if (userAnswer == correctAnswer) {
-            Toast.makeText(MainActivity.this, R.string.thongbao_true, Toast.LENGTH_SHORT).show();
+        int messageResID = 0;
+        if (!mIsCheater) {
+            if (userAnswer == correctAnswer) {
+                messageResID = R.string.thongbao_true;
+            } else {
+                messageResID = R.string.thongbao_false;
+            }
+
         } else {
-            Toast.makeText(MainActivity.this, R.string.thongbaos_false, Toast.LENGTH_SHORT).show();
+            messageResID = R.string.toast_cheating;
         }
+        Toast.makeText(this, messageResID, Toast.LENGTH_SHORT).show();
     }
 
 

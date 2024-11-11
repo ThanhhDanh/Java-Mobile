@@ -5,7 +5,8 @@
     <string name="Btn_Next">Next</string>
     <string name="btn_cheat">Cheat!</string>
     <string name="thongbao_true">Bạn đã chọn đúng!</string>
-    <string name="thongbaos_false">Bạn đã chọn sai!</string>
+    <string name="thongbao_false">Bạn đã chọn sai!</string>
+    <string name="toast_cheating">Bạn đang xem kết quả tham khảo!</string>
 
     <string name="question1">1 + 2 = 3</string>
     <string name="question2">1 + 1 = 2</string>
